@@ -972,9 +972,11 @@ function ignorePartner(gridSpace, token, options, found) {
 }
 
 Hooks.once("ready", () => {
-  // Erst bei "ready" registrieren, damit es nach anderen Modulen läuft.
-  Hooks.on("dnd5e.determineOccupiedGridSpaceDifficult", ignorePartner);
-  Hooks.on("dnd5e.determineOccupiedGridSpaceBlocking", ignorePartner);
+  // Nach allen anderen Modulen registrieren (z. B. Movement Options), damit dieser Filter zuletzt läuft.
+  setTimeout(() => {
+    Hooks.on("dnd5e.determineOccupiedGridSpaceDifficult", ignorePartner);
+    Hooks.on("dnd5e.determineOccupiedGridSpaceBlocking", ignorePartner);
+  }, 0);
   Target.patch();
   game.socket.on(SOCKET, onSocket);
   for (const actor of game.actors) {
