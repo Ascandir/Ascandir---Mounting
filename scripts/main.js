@@ -444,8 +444,8 @@ const Target = {
   open(rider, mount, releaseOthers) {
     this.close();
     const orig = rider.document.flags?.[ID]?.mounted?.orig;
-    const riderImg = rider.actor?.img || orig?.texture?.src || "icons/svg/mystery-man.svg";
-    const mountImg = mount.actor?.img || mount.document.texture.src || "icons/svg/pawprint.svg";
+    const riderImg = orig?.texture?.src || rider.actor?.img || "icons/svg/mystery-man.svg";
+    const mountImg = mount.document.texture.src || mount.actor?.img || "icons/svg/pawprint.svg";
 
     const el = document.createElement("div");
     el.className = "amt-target-chooser";
@@ -495,6 +495,12 @@ const Target = {
     } catch (err) {
       pt = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     }
+    // Größe an die Token-Darstellung auf dem Bildschirm anpassen (Zoom beachten).
+    const zoom = canvas.stage?.scale?.x ?? 1;
+    const screen = Math.max(tok.w, tok.h) * zoom;
+    const size = Math.round(Math.clamp(screen * 0.75, 80, 220));
+    this.el.style.setProperty("--amt-size", `${size}px`);
+    this.el.style.setProperty("--amt-font", `${Math.round(Math.clamp(size / 6, 14, 24))}px`);
     const box = this.el.getBoundingClientRect();
     const x = Math.min(window.innerWidth - box.width - 8, pt.x + 8);
     const y = Math.min(window.innerHeight - box.height - 8, Math.max(8, pt.y - box.height / 2));

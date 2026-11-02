@@ -1,65 +1,78 @@
 /* Auswahl beim Anvisieren */
 .amt-target-chooser {
+  --amt-size: 120px;
+  --amt-font: 18px;
   position: fixed;
   z-index: 1000;
-  padding: 6px 8px 8px;
-  border-radius: 8px;
-  background: rgba(20, 16, 12, 0.92);
-  border: 1px solid #b08d57;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  padding: calc(var(--amt-size) * 0.08) calc(var(--amt-size) * 0.1) calc(var(--amt-size) * 0.1);
+  border-radius: 10px;
+  background: rgba(20, 16, 12, 0.94);
+  border: 2px solid #b08d57;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65);
   color: #f0e6d2;
-  font-size: 12px;
+  font-size: var(--amt-font);
   pointer-events: auto;
 }
 
 .amt-target-chooser .amt-title {
   text-align: center;
-  margin-bottom: 6px;
+  margin-bottom: calc(var(--amt-size) * 0.08);
   font-weight: bold;
+  font-size: calc(var(--amt-font) * 1.1);
   letter-spacing: 0.03em;
+  line-height: 1.2;
 }
 
 .amt-target-chooser .amt-options {
   display: flex;
-  gap: 8px;
+  gap: calc(var(--amt-size) * 0.1);
 }
 
-.amt-target-chooser button {
+.amt-target-chooser .amt-options button {
+  all: unset;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  width: 84px;
-  padding: 4px;
-  margin: 0;
-  border: 1px solid #6b5636;
-  border-radius: 6px;
+  gap: calc(var(--amt-size) * 0.05);
+  width: calc(var(--amt-size) + 16px);
+  height: auto;
+  padding: 8px;
+  border: 2px solid #6b5636;
+  border-radius: 8px;
   background: rgba(60, 46, 30, 0.85);
   color: inherit;
+  font-size: var(--amt-font);
+  line-height: 1.2;
   cursor: pointer;
-  line-height: 1.1;
+  overflow: hidden;
 }
 
-.amt-target-chooser button:hover {
+.amt-target-chooser .amt-options button:hover {
   border-color: #e8c27a;
   background: rgba(110, 30, 30, 0.9);
-  box-shadow: 0 0 8px rgba(232, 194, 122, 0.6);
+  box-shadow: 0 0 10px rgba(232, 194, 122, 0.7);
 }
 
-.amt-target-chooser button img {
-  width: 64px;
-  height: 64px;
-  object-fit: cover;
+.amt-target-chooser .amt-options button img {
+  display: block;
+  width: var(--amt-size);
+  height: var(--amt-size);
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
   border: none;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.25);
 }
 
-.amt-target-chooser button span {
+.amt-target-chooser .amt-options button span {
+  display: block;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-align: center;
 }
 
 /* Aufsitzen-Dialog */
