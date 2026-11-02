@@ -291,6 +291,64 @@ function findFreeSpot(mount, w, h, rider) {
 }
 
 /* -------------------------------------------- */
+/*  Reittier an die Position des Reiters holen  */
+/* -------------------------------------------- */
+
+function mountTarget(rider) {
+  const dest = { x: rider._source.x, y: rider._source.y, elevation: rider._source.elevation };
+  if ("level" in rider._source) dest.level = rider._source.level;
+  return dest;
+}
+
+function isInSync(rider, mount) {
+  const dest = mountTarget(rider);
+  return Object.entries(dest).every(([k, v]) => mount._source[k] === v);
+}
+
+const syncing = new Set();
+
+/** Reittier unsichtbar unter den Reiter setzen (ohne Animation, ohne Bewegungskosten). */
+async function syncMount(rider, mount) {
+  if (!rider || !mount || isInSync(rider, mount)) return;
+  const dest = mountTarget(rider);
+  const options = { animate: false, [ID]: { follow: true } };
+
+  if (typeof mount.move === "function" && CONFIG.Token.movement?.actions?.displace) {
+    try {
+      await mount.move({ ...dest, action: "displace", snapped: false }, {
+        ...options,
+        showRuler: false,
+        constrainOptions: { ignoreWalls: true, ignoreCost: true }
+      });
+    } catch (err) {
+      console.warn(`${ID} | move() fehlgeschlagen, versuche update()`, err);
+    }
+    if (isInSync(rider, mount)) return;
+  }
+  await mount.update(dest, options);
+  if (!isInSync(rider, mount)) console.warn(`${ID} | Reittier konnte nicht nachgezogen werden`, mount.uuid);
+}
+
+/** Folgen anstoßen; während ein Nachziehen läuft, danach erneut prüfen. */
+async function followRider(riderDoc) {
+  const mount = getMountDoc(riderDoc);
+  if (!mount) return;
+  if (syncing.has(mount.id)) {
+    syncing.add(`${mount.id}:again`);
+    return;
+  }
+  syncing.add(mount.id);
+  try {
+    await syncMount(riderDoc, mount);
+  } catch (err) {
+    console.error(`${ID} | Reittier folgt nicht`, err);
+  } finally {
+    syncing.delete(mount.id);
+    if (syncing.delete(`${mount.id}:again`)) followRider(riderDoc);
+  }
+}
+
+/* -------------------------------------------- */
 /*  Effekt "Beritten" am Reiter                 */
 /* -------------------------------------------- */
 
@@ -815,6 +873,9 @@ function onRenderSheet(sheet, element) {
         break;
       case "use": {
         const item = mountActor.items.get(btn.dataset.itemId);
+        // Sicherstellen, dass das Reittier am Reiter steht (für Animationen).
+        const rider = getRiderDoc(mountDoc);
+        if (rider && !isInSync(rider, mountDoc) && mountDoc.isOwner) await syncMount(rider, mountDoc);
         item?.use({ event });
         break;
       }
@@ -941,18 +1002,20 @@ Hooks.on("updateToken", (doc, change, options) => {
   if (change.flags?.[ID] !== undefined) refreshPair(doc);
 
   // Reittier folgt dem Reiter.
-  if (isActiveGM() && ("x" in change || "y" in change || "elevation" in change)) {
-    const mount = getMountDoc(doc);
-    if (mount && !options?.[ID]?.follow) {
-      mount.update(
-        { x: doc.x, y: doc.y, elevation: doc.elevation },
-        { animate: false, [ID]: { follow: true } }
-      );
-    }
-  }
+  if (isActiveGM() && ["x", "y", "elevation", "level"].some((k) => k in change)) followRider(doc);
 
   // Werte am (unverknüpften) Reittier geändert → Bewegung des Reiters neu berechnen.
   if (getRiderDoc(doc) && (change.delta || change.actorData)) refreshRidersOf(doc.actor);
+});
+
+// Zusätzlich über die Bewegungs-API (v13+), falls die Position nicht im Update steht.
+Hooks.on("moveToken", (doc) => {
+  if (isActiveGM()) followRider(doc);
+});
+
+Hooks.on("canvasReady", () => {
+  if (!isActiveGM()) return;
+  for (const doc of canvas.scene?.tokens ?? []) if (getMountDoc(doc)) followRider(doc);
 });
 
 Hooks.on("updateActor", (actor) => refreshRidersOf(actor));
