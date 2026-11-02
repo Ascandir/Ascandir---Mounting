@@ -2,7 +2,7 @@
   "id": "ascandir-mounting",
   "title": "Ascandir - DnD5e Mounting",
   "description": "Auf Reittiere aufsitzen: Reiter und Reittier werden zu einem Token mit eigenem Bild. Der Reiter bekommt die Bewegung des Reittiers, und beim Anvisieren wählt man, ob der Reiter oder das Reittier getroffen werden soll.",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "authors": [
     {
       "name": "Ascandir"
@@ -45,6 +45,6 @@
   "socket": true,
   "url": "https://github.com/Ascandir/Ascandir---Mounting",
   "manifest": "https://github.com/Ascandir/Ascandir---Mounting/releases/latest/download/module.json",
-  "download": "https://github.com/Ascandir/Ascandir---Mounting/releases/download/v0.2.2/module.zip",
+  "download": "https://github.com/Ascandir/Ascandir---Mounting/releases/download/v0.2.3/module.zip",
   "bugs": "https://github.com/Ascandir/Ascandir---Mounting/issues"
 }

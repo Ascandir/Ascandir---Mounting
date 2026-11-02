@@ -960,7 +960,21 @@ Hooks.on("dnd5e.prepareSheetContext", (sheet, partId, context) => {
 
 Hooks.on("renderActorSheetV2", onRenderSheet);
 
+/** Reiter und eigenes Reittier behindern sich beim Bewegen nicht (kein schwieriges Gelände, kein Blockieren). */
+function ignorePartner(gridSpace, token, options, found) {
+  const doc = token?.document;
+  if (!doc || !found?.size) return;
+  const partner = getMountDoc(doc) ?? getRiderDoc(doc);
+  if (!partner) return;
+  for (const t of [...found]) {
+    if (t?.document?.id === partner.id || t?.id === partner.id) found.delete(t);
+  }
+}
+
 Hooks.once("ready", () => {
+  // Erst bei "ready" registrieren, damit es nach anderen Modulen läuft.
+  Hooks.on("dnd5e.determineOccupiedGridSpaceDifficult", ignorePartner);
+  Hooks.on("dnd5e.determineOccupiedGridSpaceBlocking", ignorePartner);
   Target.patch();
   game.socket.on(SOCKET, onSocket);
   for (const actor of game.actors) {
