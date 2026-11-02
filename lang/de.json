@@ -43,6 +43,20 @@
         "Name": "Chatnachricht beim Auf- und Absitzen",
         "Hint": "Schreibt in den Chat, wer auf- oder absitzt, und erinnert an die Kosten (halbe Bewegung)."
       }
+    },
+    "Sheet": {
+      "Tab": "Reittier",
+      "OpenSheet": "Bogen öffnen",
+      "HP": "Trefferpunkte",
+      "AC": "RK",
+      "Speed": "Bewegung",
+      "Check": "Attributswurf",
+      "Save": "Rettungswurf",
+      "NoOwner": "Du hast keine Besitzerrechte am Reittier. Aktionen kann nur der Spielleiter auslösen; Würfe und Trefferpunkte gehen trotzdem.",
+      "Use": "Benutzen",
+      "NoActions": "Das Reittier hat keine Aktionen.",
+      "Other": "Sonstiges",
+      "ToHit": "Treffer"
     }
   }
 }

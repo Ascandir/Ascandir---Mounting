@@ -183,6 +183,16 @@ const GM = {
     }
   },
 
+  async mountHp({ mountUuid, value, userId }) {
+    const user = game.users.get(userId);
+    const mount = fromUuidSync(mountUuid);
+    const rider = mount ? getRiderDoc(mount) : null;
+    if (!user || !mount?.actor || !rider) return;
+    if (!user.isGM && !rider.testUserPermission(user, "OWNER")) return;
+    if (!Number.isFinite(Number(value))) return;
+    await setMountHp(mount.actor, Number(value));
+  },
+
   async dismount({ sceneId, riderId, userId }) {
     const scene = game.scenes.get(sceneId);
     const user = game.users.get(userId);
@@ -206,6 +216,12 @@ const GM = {
     }
   }
 };
+
+function setMountHp(mountActor, value) {
+  const hp = mountActor.system?.attributes?.hp ?? {};
+  const max = Number(hp.effectiveMax ?? hp.max) || value;
+  return mountActor.update({ "system.attributes.hp.value": Math.clamp(Math.round(value), 0, max) });
+}
 
 /** Reiter-Token auf Originalbild/-größe zurücksetzen und neben das Reittier stellen. */
 async function restoreRider(rider, mount) {
@@ -645,6 +661,177 @@ function onRenderTokenHUD(hud, html) {
 }
 
 /* -------------------------------------------- */
+/*  Reittier-Tab im Charakterbogen              */
+/* -------------------------------------------- */
+
+const TAB = "amtMount";
+const TEMPLATE = `modules/${ID}/templates/mount-tab.hbs`;
+
+/** Reittier zu einem Reiter-Actor (über den Effekt "Beritten"). */
+function getMountFor(actor) {
+  const effect = actor?.effects?.find?.((e) => e.flags?.[ID]?.marker);
+  if (!effect) return null;
+  const mountDoc = fromUuidSync(effect.flags[ID].mountUuid);
+  if (!mountDoc?.actor || !getRiderDoc(mountDoc)) return null;
+  return { mountDoc, mountActor: mountDoc.actor };
+}
+
+function addSheetTab(Sheet) {
+  if (!Sheet?.TABS || !Sheet?.PARTS || Sheet.TABS.some((tab) => tab.tab === TAB)) return;
+  const tabs = [...Sheet.TABS];
+  const at = tabs.findIndex((tab) => tab.tab === "effects");
+  tabs.splice(at >= 0 ? at + 1 : tabs.length, 0, {
+    tab: TAB,
+    label: "AMT.Sheet.Tab",
+    icon: "fa-solid fa-horse",
+    condition: (actor) => !!getMountFor(actor)
+  });
+  Sheet.TABS = tabs;
+
+  const parts = {};
+  const entries = Object.entries(Sheet.PARTS);
+  const lastTab = entries.map(([, p]) => p?.container?.id).lastIndexOf("tabs");
+  entries.forEach(([key, part], i) => {
+    parts[key] = part;
+    if (i === lastTab) {
+      parts[TAB] = { container: { classes: ["tab-body"], id: "tabs" }, template: TEMPLATE, scrollable: [""] };
+    }
+  });
+  if (!(TAB in parts)) parts[TAB] = { container: { classes: ["tab-body"], id: "tabs" }, template: TEMPLATE, scrollable: [""] };
+  Sheet.PARTS = parts;
+}
+
+function signed(n) {
+  const v = Number(n) || 0;
+  return v >= 0 ? `+${v}` : `${v}`;
+}
+
+function buildMountContext(actor) {
+  const found = getMountFor(actor);
+  if (!found) return null;
+  const { mountDoc, mountActor } = found;
+  const sys = mountActor.system ?? {};
+  const hp = sys.attributes?.hp ?? {};
+  const max = Number(hp.effectiveMax ?? hp.max) || 0;
+  const value = Number(hp.value) || 0;
+
+  const movement = sys.attributes?.movement ?? {};
+  const speeds = [];
+  for (const [key, cfg] of Object.entries(CONFIG.DND5E.movementTypes ?? {})) {
+    if (key === "jump") continue;
+    const v = Number(movement.speeds?.[key]) || 0;
+    if (v) speeds.push({ label: game.i18n.localize(cfg.label ?? key), value: v, units: movement.units ?? "ft" });
+  }
+
+  const abilities = Object.entries(CONFIG.DND5E.abilities ?? {}).map(([key, cfg]) => {
+    const a = sys.abilities?.[key] ?? {};
+    return {
+      key,
+      label: game.i18n.localize(cfg.abbreviation ?? key).toUpperCase(),
+      value: a.value ?? 10,
+      mod: signed(a.mod),
+      save: signed(a.save?.value ?? a.save ?? a.mod)
+    };
+  });
+
+  const activationTypes = CONFIG.DND5E.activityActivationTypes ?? {};
+  const order = ["action", "bonus", "reaction", "legendary", "special"];
+  const groups = new Map();
+  for (const item of mountActor.items) {
+    const activities = item.system?.activities;
+    if (!activities?.size) continue;
+    const first = activities.contents?.[0] ?? [...activities][0];
+    const type = first?.activation?.type || "special";
+    const key = order.includes(type) ? type : "special";
+    if (!groups.has(key)) {
+      const label = key === "special" ? t("Sheet.Other") : (activationTypes[key]?.label ?? key);
+      groups.set(key, { key, label: game.i18n.localize(label), items: [] });
+    }
+    const uses = item.system?.uses;
+    let detail = "";
+    if (uses?.max) detail = `${uses.value ?? 0}/${uses.max}`;
+    else if (first?.labels?.toHit) detail = `${t("Sheet.ToHit")} ${first.labels.toHit}`;
+    groups.get(key).items.push({ id: item.id, name: item.name, img: item.img, detail });
+  }
+  const sorted = [...groups.values()].sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key));
+
+  const size = CONFIG.DND5E.actorSizes?.[sys.traits?.size]?.label;
+  let typeLabel = "";
+  try {
+    typeLabel = mountActor.constructor.formatCreatureType?.(sys.details?.type) ?? "";
+  } catch (err) {
+    typeLabel = "";
+  }
+  return {
+    uuid: mountDoc.uuid,
+    name: mountDoc.name,
+    img: mountActor.img || mountDoc.texture.src,
+    subtitle: [size ? game.i18n.localize(size) : "", typeLabel].filter(Boolean).join(" · "),
+    canEdit: mountActor.isOwner,
+    canDismount: actor.isOwner || game.user.isGM,
+    hp: { value, max, pct: max ? Math.clamp(Math.round((value / max) * 100), 0, 100) : 0 },
+    ac: sys.attributes?.ac?.value ?? "—",
+    speeds,
+    abilities,
+    groups: sorted
+  };
+}
+
+function onRenderSheet(sheet, element) {
+  const root = element instanceof HTMLElement ? element : sheet.element;
+  const section = root?.querySelector?.(".amt-sheet");
+  if (!section || section.dataset.amtBound) return;
+  section.dataset.amtBound = "1";
+  const actor = sheet.actor ?? sheet.document;
+
+  section.addEventListener("click", async (event) => {
+    const btn = event.target.closest("[data-amt]");
+    if (!btn || btn.disabled) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const found = getMountFor(actor);
+    if (!found) return;
+    const { mountDoc, mountActor } = found;
+    switch (btn.dataset.amt) {
+      case "sheet":
+        mountActor.sheet?.render(true);
+        break;
+      case "dismount": {
+        const rider = getRiderDoc(mountDoc);
+        if (rider) dismount(rider);
+        break;
+      }
+      case "check":
+        mountActor.rollAbilityCheck({ ability: btn.dataset.ability, event });
+        break;
+      case "save":
+        mountActor.rollSavingThrow({ ability: btn.dataset.ability, event });
+        break;
+      case "use": {
+        const item = mountActor.items.get(btn.dataset.itemId);
+        item?.use({ event });
+        break;
+      }
+    }
+  });
+
+  const hpInput = section.querySelector("[data-amt-hp]");
+  hpInput?.addEventListener("change", async (event) => {
+    event.stopPropagation();
+    const found = getMountFor(actor);
+    if (!found) return;
+    const raw = hpInput.value.trim();
+    const current = Number(found.mountActor.system?.attributes?.hp?.value) || 0;
+    // "-5" / "+5" ändern relativ, eine Zahl setzt den Wert.
+    const value = /^[+-]/.test(raw) ? current + Number(raw) : Number(raw);
+    if (!Number.isFinite(value)) return;
+    if (found.mountActor.isOwner) setMountHp(found.mountActor, value);
+    else request("mountHp", { mountUuid: found.mountDoc.uuid, value });
+  });
+  hpInput?.addEventListener("keydown", (event) => event.stopPropagation());
+}
+
+/* -------------------------------------------- */
 /*  Einstellungen & Hooks                       */
 /* -------------------------------------------- */
 
@@ -687,6 +874,24 @@ Hooks.once("init", () => {
     return result;
   };
 });
+
+Hooks.once("setup", () => {
+  const sheets = globalThis.dnd5e?.applications?.actor ?? {};
+  addSheetTab(sheets.CharacterActorSheet);
+  addSheetTab(sheets.NPCActorSheet);
+});
+
+Hooks.on("dnd5e.prepareSheetContext", (sheet, partId, context) => {
+  if (partId !== TAB) return;
+  try {
+    context.amt = buildMountContext(sheet.actor ?? sheet.document);
+  } catch (err) {
+    console.error(`${ID} | Reittier-Tab konnte nicht vorbereitet werden`, err);
+    context.amt = null;
+  }
+});
+
+Hooks.on("renderActorSheetV2", onRenderSheet);
 
 Hooks.once("ready", () => {
   Target.patch();

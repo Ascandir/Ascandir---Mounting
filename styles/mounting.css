@@ -106,3 +106,192 @@
   object-fit: contain;
   border: none;
 }
+
+/* Reittier-Tab im Charakterbogen */
+.amt-mount-tab .amt-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 6px 4px;
+}
+
+.amt-mount-tab .amt-head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.amt-mount-tab .amt-portrait {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid var(--dnd5e-color-gold, #9f9275);
+}
+
+.amt-mount-tab .amt-name {
+  margin: 0;
+  font-size: 1.5em;
+  border: none;
+}
+
+.amt-mount-tab .amt-sub {
+  opacity: 0.75;
+  margin-bottom: 6px;
+}
+
+.amt-mount-tab .amt-head-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.amt-mount-tab .amt-head-buttons button {
+  flex: 0 0 auto;
+  width: auto;
+  padding: 2px 8px;
+}
+
+.amt-mount-tab .amt-stats {
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr;
+  gap: 8px;
+}
+
+.amt-mount-tab .amt-stat {
+  padding: 6px 8px;
+  border: 1px solid var(--dnd5e-color-gold, #9f9275);
+  border-radius: 6px;
+  text-align: center;
+}
+
+.amt-mount-tab .amt-stat label {
+  display: block;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.amt-mount-tab .amt-big {
+  font-size: 1.6em;
+  font-weight: bold;
+}
+
+.amt-mount-tab .amt-hp-values {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  font-size: 1.2em;
+}
+
+.amt-mount-tab .amt-hp-values input {
+  width: 4em;
+  text-align: center;
+}
+
+.amt-mount-tab .amt-hp-bar {
+  height: 6px;
+  margin-top: 4px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.amt-mount-tab .amt-hp-bar > div {
+  height: 100%;
+  background: #8c2a2a;
+}
+
+.amt-mount-tab .amt-speeds {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px 10px;
+}
+
+.amt-mount-tab .amt-abilities {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+}
+
+.amt-mount-tab .amt-ability {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border: 1px solid var(--dnd5e-color-gold, #9f9275);
+  border-radius: 6px;
+}
+
+.amt-mount-tab .amt-ability-label {
+  font-size: 0.8em;
+  font-weight: bold;
+}
+
+.amt-mount-tab .amt-ability button {
+  width: 100%;
+  padding: 0 2px;
+  line-height: 1.6;
+}
+
+.amt-mount-tab .amt-mod {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+.amt-mount-tab .amt-score {
+  font-size: 0.8em;
+  opacity: 0.7;
+}
+
+.amt-mount-tab .amt-save {
+  font-size: 0.85em;
+}
+
+.amt-mount-tab .amt-hint {
+  opacity: 0.8;
+  font-style: italic;
+}
+
+.amt-mount-tab .amt-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.amt-mount-tab .amt-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.amt-mount-tab .amt-item:last-child {
+  border-bottom: none;
+}
+
+.amt-mount-tab .amt-item img {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 4px;
+}
+
+.amt-mount-tab .amt-item-info {
+  flex: 1;
+}
+
+.amt-mount-tab .amt-item-detail {
+  font-size: 0.8em;
+  opacity: 0.7;
+}
+
+.amt-mount-tab .amt-item button {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 28px;
+  padding: 0;
+}

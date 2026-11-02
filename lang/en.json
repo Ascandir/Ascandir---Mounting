@@ -43,6 +43,20 @@
         "Name": "Chat message on mount/dismount",
         "Hint": "Posts who mounts or dismounts and reminds of the cost (half speed)."
       }
+    },
+    "Sheet": {
+      "Tab": "Mount",
+      "OpenSheet": "Open sheet",
+      "HP": "Hit Points",
+      "AC": "AC",
+      "Speed": "Speed",
+      "Check": "Ability check",
+      "Save": "Saving throw",
+      "NoOwner": "You don't own this mount. Only the GM can use its actions; rolls and hit points still work.",
+      "Use": "Use",
+      "NoActions": "This mount has no actions.",
+      "Other": "Other",
+      "ToHit": "To hit"
     }
   }
 }

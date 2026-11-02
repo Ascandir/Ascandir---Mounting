@@ -45,3 +45,14 @@ Solange der Charakter beritten ist, hat er die Bewegung des Reittiers (Laufen, F
 | Maximaler Abstand zwischen Reiter und Reittier | 1 Feld |
 | Reittier muss mindestens eine Größe größer sein (5e-Regel) | an |
 | Chatnachricht beim Auf-/Absitzen mit Hinweis auf die Kosten (halbe Bewegung) | an |
+
+## Reittier im Charakterbogen
+
+Solange der Charakter beritten ist, hat sein Charakterbogen einen zusätzlichen Reiter mit **Pferd-Symbol**. Dort stehen:
+
+- Bild, Name, Trefferpunkte (direkt änderbar, auch „-5“ oder „+3“), RK und Bewegung des Reittiers
+- Attribute: Klick auf den Modifikator würfelt einen Attributswurf, Klick auf das Schild einen Rettungswurf
+- Aktionen, Bonusaktionen und Reaktionen des Reittiers zum Anklicken
+- Knöpfe zum Öffnen des vollen Reittier-Bogens und zum Absitzen
+
+Aktionen des Reittiers kann ein Spieler nur auslösen, wenn er Besitzerrechte am Reittier hat. Trefferpunkte ändern und würfeln geht auch ohne.

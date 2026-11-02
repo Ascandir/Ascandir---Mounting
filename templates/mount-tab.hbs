@@ -1,0 +1,83 @@
+<section class="tab amt-mount-tab {{ tab.cssClass }}" data-tab="{{ tab.id }}" data-group="{{ tab.group }}">
+  {{#if amt}}
+  <div class="amt-sheet" data-mount-uuid="{{ amt.uuid }}">
+
+    <header class="amt-head">
+      <img class="amt-portrait" src="{{ amt.img }}" alt="">
+      <div class="amt-head-info">
+        <h3 class="amt-name">{{ amt.name }}</h3>
+        <div class="amt-sub">{{ amt.subtitle }}</div>
+        <div class="amt-head-buttons">
+          <button type="button" data-amt="sheet"><i class="fa-solid fa-file-lines"></i> {{ localize "AMT.Sheet.OpenSheet" }}</button>
+          {{#if amt.canDismount}}
+          <button type="button" data-amt="dismount"><i class="fa-solid fa-person-walking-arrow-right"></i> {{ localize "AMT.HUD.Dismount" }}</button>
+          {{/if}}
+        </div>
+      </div>
+    </header>
+
+    <div class="amt-stats">
+      <div class="amt-stat amt-hp">
+        <label>{{ localize "AMT.Sheet.HP" }}</label>
+        <div class="amt-hp-values">
+          <input type="number" data-amt-hp value="{{ amt.hp.value }}" step="1">
+          <span class="sep">/</span>
+          <span>{{ amt.hp.max }}</span>
+        </div>
+        <div class="amt-hp-bar"><div style="width: {{ amt.hp.pct }}%"></div></div>
+      </div>
+      <div class="amt-stat">
+        <label>{{ localize "AMT.Sheet.AC" }}</label>
+        <div class="amt-big">{{ amt.ac }}</div>
+      </div>
+      <div class="amt-stat amt-speed">
+        <label>{{ localize "AMT.Sheet.Speed" }}</label>
+        <div class="amt-speeds">
+          {{#each amt.speeds}}<span>{{ label }} {{ value }} {{ units }}</span>{{/each}}
+        </div>
+      </div>
+    </div>
+
+    <div class="amt-abilities">
+      {{#each amt.abilities}}
+      <div class="amt-ability">
+        <div class="amt-ability-label">{{ label }}</div>
+        <button type="button" class="amt-mod" data-amt="check" data-ability="{{ key }}" data-tooltip="{{ localize 'AMT.Sheet.Check' }}">{{ mod }}</button>
+        <div class="amt-score">{{ value }}</div>
+        <button type="button" class="amt-save" data-amt="save" data-ability="{{ key }}" data-tooltip="{{ localize 'AMT.Sheet.Save' }}">
+          <i class="fa-solid fa-shield-halved"></i> {{ save }}
+        </button>
+      </div>
+      {{/each}}
+    </div>
+
+    {{#unless amt.canEdit}}
+    <p class="amt-hint"><i class="fa-solid fa-lock"></i> {{ localize "AMT.Sheet.NoOwner" }}</p>
+    {{/unless}}
+
+    {{#each amt.groups}}
+    <fieldset class="card amt-group">
+      <legend>{{ label }}</legend>
+      <ul class="amt-items">
+        {{#each items}}
+        <li class="amt-item">
+          <img src="{{ img }}" alt="">
+          <div class="amt-item-info">
+            <div class="amt-item-name">{{ name }}</div>
+            {{#if detail}}<div class="amt-item-detail">{{ detail }}</div>{{/if}}
+          </div>
+          <button type="button" data-amt="use" data-item-id="{{ id }}" {{#unless ../../amt.canEdit}}disabled{{/unless}}
+                  data-tooltip="{{ localize 'AMT.Sheet.Use' }}">
+            <i class="fa-solid fa-dice-d20"></i>
+          </button>
+        </li>
+        {{/each}}
+      </ul>
+    </fieldset>
+    {{else}}
+    <p class="amt-hint">{{ localize "AMT.Sheet.NoActions" }}</p>
+    {{/each}}
+
+  </div>
+  {{/if}}
+</section>
