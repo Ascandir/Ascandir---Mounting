@@ -1,0 +1,48 @@
+{
+  "AMT": {
+    "HUD": {
+      "Mount": "Aufsitzen",
+      "Dismount": "Absitzen"
+    },
+    "Dialog": {
+      "Title": "Aufsitzen",
+      "ChoosePair": "Wer soll auf welches Reittier aufsitzen?",
+      "Image": "Bild für Reiter + Reittier",
+      "ImagePlaceholder": "Leer = Bild des Reittiers",
+      "ImageHint": "Wird für diese Kombination gespeichert und beim nächsten Mal vorgeschlagen.",
+      "Browse": "Bild auswählen",
+      "Confirm": "Aufsitzen",
+      "Cancel": "Abbrechen"
+    },
+    "Target": {
+      "Title": "Wen anvisieren?"
+    },
+    "Effect": {
+      "Name": "Beritten: {mount}",
+      "Description": "<p>Reitet auf {mount}. Bewegung entspricht der des Reittiers.</p>"
+    },
+    "Chat": {
+      "Mounted": "<strong>{rider}</strong> sitzt auf <strong>{mount}</strong> auf.",
+      "Dismounted": "<strong>{rider}</strong> sitzt von <strong>{mount}</strong> ab.",
+      "Cost": "Kostet die Hälfte der eigenen Bewegung ({cost} {units})."
+    },
+    "Notify": {
+      "NoGM": "Zum Auf- oder Absitzen muss ein Spielleiter online sein.",
+      "NoPairs": "Kein passendes Reittier in der Nähe."
+    },
+    "Settings": {
+      "Range": {
+        "Name": "Maximaler Abstand (Felder)",
+        "Hint": "Wie weit Reiter und Reittier höchstens auseinanderstehen dürfen. 0 = direkt nebeneinander. Der Spielleiter ist beim Aufsitzen nicht daran gebunden."
+      },
+      "SizeRule": {
+        "Name": "Reittier muss größer sein",
+        "Hint": "Nach 5e-Regeln muss das Reittier mindestens eine Größenkategorie größer sein als der Reiter."
+      },
+      "ChatMessage": {
+        "Name": "Chatnachricht beim Auf- und Absitzen",
+        "Hint": "Schreibt in den Chat, wer auf- oder absitzt, und erinnert an die Kosten (halbe Bewegung)."
+      }
+    }
+  }
+}

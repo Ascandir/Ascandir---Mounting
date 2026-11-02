@@ -1,0 +1,108 @@
+/* Auswahl beim Anvisieren */
+.amt-target-chooser {
+  position: fixed;
+  z-index: 1000;
+  padding: 6px 8px 8px;
+  border-radius: 8px;
+  background: rgba(20, 16, 12, 0.92);
+  border: 1px solid #b08d57;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  color: #f0e6d2;
+  font-size: 12px;
+  pointer-events: auto;
+}
+
+.amt-target-chooser .amt-title {
+  text-align: center;
+  margin-bottom: 6px;
+  font-weight: bold;
+  letter-spacing: 0.03em;
+}
+
+.amt-target-chooser .amt-options {
+  display: flex;
+  gap: 8px;
+}
+
+.amt-target-chooser button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 84px;
+  padding: 4px;
+  margin: 0;
+  border: 1px solid #6b5636;
+  border-radius: 6px;
+  background: rgba(60, 46, 30, 0.85);
+  color: inherit;
+  cursor: pointer;
+  line-height: 1.1;
+}
+
+.amt-target-chooser button:hover {
+  border-color: #e8c27a;
+  background: rgba(110, 30, 30, 0.9);
+  box-shadow: 0 0 8px rgba(232, 194, 122, 0.6);
+}
+
+.amt-target-chooser button img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.amt-target-chooser button span {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Aufsitzen-Dialog */
+.amt-dialog .amt-pairs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.amt-dialog .amt-pair {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.amt-dialog .amt-pairs.single .amt-pair {
+  cursor: default;
+}
+
+.amt-dialog .amt-pairs.single input[type="radio"] {
+  display: none;
+}
+
+.amt-dialog .amt-pair img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border: none;
+}
+
+.amt-dialog .amt-preview {
+  display: flex;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+.amt-dialog .amt-preview img {
+  max-width: 160px;
+  max-height: 160px;
+  object-fit: contain;
+  border: none;
+}

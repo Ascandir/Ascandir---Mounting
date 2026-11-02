@@ -1,0 +1,48 @@
+{
+  "AMT": {
+    "HUD": {
+      "Mount": "Mount",
+      "Dismount": "Dismount"
+    },
+    "Dialog": {
+      "Title": "Mount",
+      "ChoosePair": "Who should mount which creature?",
+      "Image": "Image for rider + mount",
+      "ImagePlaceholder": "Empty = mount's image",
+      "ImageHint": "Saved for this combination and suggested next time.",
+      "Browse": "Choose image",
+      "Confirm": "Mount",
+      "Cancel": "Cancel"
+    },
+    "Target": {
+      "Title": "Target whom?"
+    },
+    "Effect": {
+      "Name": "Mounted: {mount}",
+      "Description": "<p>Riding {mount}. Movement equals the mount's movement.</p>"
+    },
+    "Chat": {
+      "Mounted": "<strong>{rider}</strong> mounts <strong>{mount}</strong>.",
+      "Dismounted": "<strong>{rider}</strong> dismounts <strong>{mount}</strong>.",
+      "Cost": "Costs half of your own speed ({cost} {units})."
+    },
+    "Notify": {
+      "NoGM": "A Game Master must be online to mount or dismount.",
+      "NoPairs": "No suitable mount nearby."
+    },
+    "Settings": {
+      "Range": {
+        "Name": "Maximum distance (squares)",
+        "Hint": "How far apart rider and mount may be. 0 = adjacent. The GM is not bound by this when mounting."
+      },
+      "SizeRule": {
+        "Name": "Mount must be larger",
+        "Hint": "By 5e rules the mount must be at least one size category larger than the rider."
+      },
+      "ChatMessage": {
+        "Name": "Chat message on mount/dismount",
+        "Hint": "Posts who mounts or dismounts and reminds of the cost (half speed)."
+      }
+    }
+  }
+}
